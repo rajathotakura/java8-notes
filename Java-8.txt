@@ -1,0 +1,228 @@
+Optional Class:
+----------------
+In Java, a commonly repeated exception is a NullPointerException. So to avoid NullPointerException, Java people introduced Optional Classes in the Java 8 version.
+or
+It is used to represent non-null value in java. It is used to avoid NullPointerException and avoid having too many null checks(unnecessary null checks).
+
+Optional Object example:
+------------------------
+with out Optional class:
+public class OptionalDemo {
+
+    public static void main(String[] args) {
+        String name = getStudentData();
+        if(name!=null) {
+            System.out.println("Student name length is: "+name.length());
+        }else
+            System.out.println("Name not found");
+    }
+    public static String getStudentData() {
+
+        //Student student = StudentData.getStudentData().get(0);
+        Student student = null;
+        if(student!=null) {
+            return student.getName();
+        }else
+            return null;
+    }
+}
+If Student class contains more properties, then each and every property we should check before accessing that property weather it is null or not?
+----------------------------
+with Optional Class:
+-----------------------------
+public class OptionalDemo {
+
+    public static void main(String[] args) {
+        /*String name = getStudentData();
+        if(name!=null) {
+            System.out.println("Student name length is: "+name.length());
+        }else
+            System.out.println("Name not found");*/
+
+        Optional<String> nameOptional = getStudentNameUsingOptional();
+        if(nameOptional.isPresent()) {
+            System.out.println("Student name length is: " + nameOptional.get().length());
+        }else
+            System.out.println("Name not found");
+    }
+    public static String getStudentData() {
+
+        //Student student = StudentData.getStudentData().get(0);
+        Student student = null;
+        if(student!=null) {
+            return student.getName();
+        }else
+            return null;
+    }
+    public static Optional<String> getStudentNameUsingOptional() {
+
+        //Optional<Student> studentOptional = Optional.ofNullable(StudentData.getStudentData().get(1));
+        Optional<Student> studentOptional = Optional.ofNullable(null);
+        if(studentOptional.isPresent()) {
+            //return studentOptional.get().getName();
+            return studentOptional.map(Student::getName);
+        }
+        return Optional.empty(); // will return Optional object with no value // will return NoSuchElementException
+    }
+}
+Q) What is difference between if(obj!= null) vs if(obj.isPresent())?
+-> Object will wrapped in the form of Optional and if object not contains any value also we can check with the help of optional class method isPresent() for data.
+whereas !=null checking, we are directly checking the object, so if object not contains any value then we will get NullPointerException.
+
+Q) Difference between return null; and return Optional.empty();?
+-> return null, null can be accepted by any object like String or Student,
+   Optional.empty() method can only return Optional object, by using optional object, we can call optional class methods.
+------
+Optional object creation -> Optional.of() vs  Optional.ofNullable(--) vs Optional.empty():
+---------------------------------------------------------------------------
+Optional.ofNullable(--):
+if we pass any parameter to ofNullable() then it will return Optional<that Object>, if we are not passing any valid paratmer to ofNullable() method then it will return empty Optional object.
+Optional.of():
+if we pass any parameter to of() then it will return Optional<that Object>, if we are not passing any valid paratmer to of() method then it will return NullPointerException.
+Optional.empty():
+It is used to return the empty Optional object.
+
+Eg:
+--
+ublic class OptionalOfEmptyOfNullable {
+    public static void main(String[] args) {
+
+        System.out.println("Optional class ofNullable() with Parameter: "+ofNullableWithParameter().get()); // Rohan
+        System.out.println("Optional class ofNullable() without parameter: "+ofNullableWithoutParameter()); // Optional.emtpy
+        //System.out.println("Optional class ofNullable() without parameter: "+ofNullableWithoutParameter().get()); // NoSuchElementException
+        System.out.println("Optional class ofNullable() without parameter: "+ofNullableWithoutParameter().isPresent()); // false
+        System.out.println("==================================");
+        System.out.println("Optional class of() with paramter: "+ofwithParameter().get()); // Rohan
+        //System.out.println("Optional class of() with out paramter: "+ofwithoutParameter()); // NullPointerException
+        //System.out.println("Optional class of() with out paramter: "+ofwithoutParameter().get()); NullPointerException
+        //System.out.println("Optional class of() with out paramter: "+ofwithoutParameter().isPresent()); // NullPointerException
+        System.out.println("==================================");
+        System.out.println("Optional class empty(): "+empty()); // Optional.empty
+        //System.out.println("Optional class empty(): "+empty().get()); //NoSuchElementException
+    }
+    public static Optional<String> ofNullableWithParameter() {
+        Optional<String> optionalOfNullable = Optional.ofNullable("Rohan");
+        return optionalOfNullable;
+    }
+    public static Optional<String> ofNullableWithoutParameter() {
+        Optional<String> optionalOfNullablewithNull = Optional.ofNullable(null);
+        return optionalOfNullablewithNull;
+    }
+
+    public static Optional<String> ofwithParameter() {
+        return Optional.of("Rohan");
+    }
+    public static Optional<String> ofwithoutParameter() {
+        return Optional.of(null);
+    }
+    public static Optional<String> empty() {
+        return Optional.empty();
+    }
+}
+----------------------
+orElse("") vs orElseGet(()->"") vs orElseThrow(()->new R.E()): -
+----------------------
+orElse() -> This method we can call on Optional object. if Optional object having proper data then it will return data otherwise it will return value which we passed in orElse("") parameter.
+
+orElseGet() -> This method will take input as supplier. This method we can call on Optional object. if Optional object having proper data then it will return data otherwise it will return the value which we passed in orElseGet(()->"").
+
+orElseThrow() -> This method will take input as supplier. This method we can call on Optional object. if Optional object having proper data then it will return data otherwise it will return the Exception which we passed in orElseThrow(()-> new R.E()).
+
+eg:
+---
+public class OptionalOrElseExample {
+    //orElse()
+    public static String orElseOptional() {
+        //Optional<Student> studentOptional = Optional.ofNullable(StudentData.getStudentData().get(0));
+        Optional<Student> studentOptional = Optional.ofNullable(null);
+        return studentOptional.map(Student::getName).orElse("default value");
+    }
+    //orElseGet()
+    public static String orElseGetOptional() {
+        //Optional<Student> stuOptional = Optional.ofNullable(StudentData.getStudentData().get(1));
+        Optional<Student> stuOptional = Optional.ofNullable(null);
+        return stuOptional.map(Student::getName).orElseGet(() -> "No data found");
+    }
+    //orElseThrow()
+    public static String orElseThrowOptional() {
+        //Optional<Student> stOptional = Optional.ofNullable(StudentData.getStudentData().get(1));
+        Optional<Student> stOptional = Optional.ofNullable(null);
+        return stOptional.map(Student::getName).orElseThrow(()->new RuntimeException("Invalid inputs"));
+    }
+    public static void main(String[] args) {
+        String name = orElseOptional();
+        //System.out.println("orElse with proper Output: "+name);
+        System.out.println("orElse with out proper output: "+name);
+        System.out.println("-----------------------");
+        String name1 = orElseGetOptional();
+        System.out.println("orElseGet() with proper output: "+name1);
+       // System.out.println("orElseGet() with out proper output: "+name1);
+        System.out.println("-----------------------");
+        String name2 = orElseThrowOptional();
+        System.out.println("orElseThrow() with proper output: "+name2);
+    }
+
+}
+----------------------------------------------------------------------------
+isPresent() vs ifPresent()
+isPresent() -> This method will check optional object having data or not?. if optional obj having data then it will return true, else it will return false.
+ifPresent() -> This method will take input as Consumer. This method also will check optional obj having data or not. if Optional obj having data then it will perform any other operation like other method call or some other class method call using optional obj value as input through Consumer. if Optional obj not having data then no action taken.
+Eg:
+public class OptionalPresentExample {
+    public static void main(String[] args) {
+
+       Optional<String> optional =  Optional.ofNullable("Hello");
+       Optional<String> optionalNull =  Optional.ofNullable(null);
+        //isPresent()
+        System.out.println("is Optional object having data? "+optional.isPresent()); //true
+        System.out.println("is Optional object having data? "+optionalNull.isPresent()); //false
+        System.out.println("===============");
+        //ifPresent()
+        optional.ifPresent(s-> System.out.println("if Optional obj having data then do another operation: "+s)); // output will print
+        optionalNull.ifPresent(s-> System.out.println("if Optional obj having data then do another operation: "+s)); // no output
+    }
+}
+--------------------------
+map() vs flatMap() vs filter() with respect to Optional Class:-
+--------------------------
+filter(predicate) -> This method will take predicate as input. This filter method we can apply on Optional object. By using this filter(), we can filter the data from Optional object.
+map(Function) -> This method will take Function as input. This map method we can apply on Optional object. By using this map(), we can transform the data from Optional object.
+eg:
+public class OptionalMapFlatMapFilterExample {
+    //filter
+    public static void filterOptional() {
+        Optional<Student> studentOptional = Optional.ofNullable(StudentData.getStudentData().get(0));
+        studentOptional.filter(s -> s.getGpa()>8)
+                .ifPresent(st-> System.out.println(st));
+    }
+    //map
+    public static void mapOptional() {
+        Optional<Student> stuOptional = Optional.ofNullable(StudentData.getStudentData().get(1));
+        //stuOptional.map(Student::getName)
+        //        .ifPresent(s -> System.out.println(s));
+        if(stuOptional.isPresent()) {
+            Optional<String> sOptonal = stuOptional.filter(s->s.getGpa()>7)
+                    .map(s->s.getName());
+            System.out.println(sOptonal.get());
+        }
+    }
+    public static void main(String[] args) {
+        filterOptional();
+        mapOptional();
+    }
+}
+//flatMap()
+
+------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
