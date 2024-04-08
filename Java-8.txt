@@ -228,7 +228,7 @@ Default and Static methods in interfaces:
 Before java8, its very difficult to add new features in interfaces to existing project. Because implementation classes will be effected. So to resolve this issue, Java people intruduced Default and static method in interfaces in java8.
 -> Default method having default method. But if developer not satisfied with default implementation, then developer can override the default method in the implementation class.
 -> Static method having the implementation. but we can not override the static method in implementation class. but we can declare exact satic method signature in implementation class. but it is not overriding. it is method hiding. advatage with method hiding is, we can stop seeing the developers default static method implementation in interface.
-
+-> Default methods can be overridden but static methods can not be overridden.
 eg:
 public class DefaultMethodExample {
 
@@ -312,6 +312,223 @@ public static void sortWithNullValues(List<Student> stList) {
 -> nullsFirst() --> this method will print null values at first.
 -> nullsLast() --> this method will print null values at last.
 ----------------------------------------------------
+Create an interface with default and static methods:
+----------------------------------------------------
+public interface Multiplier {
+
+    int mulitply(List<Integer> intList);
+
+    default int size(List<Integer> iList) {
+        System.out.println("Multiplier interface size()");
+        return iList.size();
+    }
+    static boolean isEmpty(List<Integer> intList) {
+        return intList==null && intList.size()==0;
+    }
+}
+
+public class MultiplierImpl implements Multiplier{
+
+    @Override
+    public int mulitply(List<Integer> intList) {
+        return intList.stream()
+                .reduce(1,(a,b)->a*b);
+    }
+    public int size(List<Integer> iList) {
+        System.out.println("MultiplierImpl class size()");
+        return iList.size();
+    }
+}
+
+public class MultiplierClient {
+
+    public static void main(String[] args) {
+
+        Multiplier multiplier = new MultiplierImpl();
+        List<Integer> iList = Arrays.asList(1,3,5);
+        System.out.println("Multipling result is: "+multiplier.mulitply(iList)); //15
+        System.out.println("size is: "+multiplier.size(iList)); //MultiplierImpl class size()
+
+        System.out.println("is the List empty: "+Multiplier.isEmpty(iList)); // false
+    }
+}
+here size() will invoke from MultiplierImpl class because always it invoke from runtime object. 
+-----------------------------------------------------------------------------------------------
+Abstract class vs interface in java8:
+------------------------------------------------------------------------------------------------
+-> Abstract classes having instance variables but interfaces does not.
+-> Java 8 supports multiple inheritance. ie before java 8, it is not possible. --> need to test weather it is supported or not?
+eg:
+public interface Interface1 {
+
+    default void methodA() {
+        System.out.println("Inside Method A "+Interface1.class);
+    }
+}
+public interface Interface2 extends Interface1{
+    default void methodB() {
+        System.out.println("Inside Method B "+Interface2.class);
+    }
+    default void methodA() {
+        System.out.println("Inside Method A "+Interface2.class);
+    }
+}
+public interface Interface3 extends Interface2{
+    default void methodC() {
+        System.out.println("Inside Method C "+Interface3.class);
+    }
+}
+public class Client123 implements Interface1,Interface2,Interface3{
+
+   /* public void methodA() {
+        System.out.println("Inside Method A "+Interface1.class);
+    }*/
+    public static void main(String[] args) {
+
+        Client123 c = new Client123();
+        c.methodA(); // result will print from child interface class Interface2. At runtime always will print child class methods in overridding.
+        c.methodB();
+        c.methodC();
+    }
+}
+Note: Here we are inheriting multiple behaviours from multiple interfaces. This is called multiple inheritance.
+-----------------------------------
+Multiple inheritance issues resolve"
+-----------------------------------
+When ever we are implementing interfaces and that interfaces having same method with signature. then java will confuse. so to resolve that cases, we have to  override that method in our implementation class.
+Eg:
+public interface Interface1 {
+
+    default void methodA(){
+        System.out.println("Method A from "+Interface1.class);
+    }
+}
+public interface Interface4 {
+
+    default void methodA(){
+        System.out.println("Method A from "+Interface4.class);
+    }
+}
+public class Client14 implements Interface1,Interface4{
+
+    public void methodA(){
+        System.out.println("Method A from "+Client14.class);
+    }
+
+    public static void main(String[] args) {
+
+        Client14 c14 = new Client14();
+        c14.methodA(); //Method A from class org.learn.java8.defaults.Client14
+    }
+}
+========================================================================================================================================================
+New Date/Time APIs
+========================================================================================================================================================
+LocalDate, LocalTime and LocalDateTime class introduced in Java 8 as part of java.time pacakge. - new classes are created with the inspiration of Joda-Time library.
+--> All these new libraries are immutable to promote functional programming.
+--> Supproting class like Instant, Duration, Period and etc.
+--> LocalDate: Used to represent the date.
+--> LocalDate: Used to represent the time.
+--> LocalDateTime: Used to represent the Data and time.
+Eg: 
+public class NewDataTimeExample {
+    public static void main(String[] args) {
+        //LocalDate
+        LocalDate localDate = LocalDate.now();
+        //LocalTime
+        LocalTime localTime = LocalTime.now();
+        //LocalDateTime
+        LocalDateTime localDateTime = LocalDateTime.now();
+        System.out.println("Local Date: "+localDate); // Local Date: 2024-04-08
+        System.out.println("Local Time: "+localTime); // Local Time: 13:34:25.722924100
+        System.out.println("Local Date and Time: "+localDateTime); // Local Date and Time: 2024-04-08T13:34:25.722924100
+    }
+Note: now() is overloaded method. i.e.
+now()
+now(Clock clock)
+now(ZoneId zone)
+--------------------------------------------------------------
+LocalDate class Example:
+-------------------------------------------
+public class LocalDateExample {
+    public static void main(String[] args) {
+
+        LocalDate localDate = LocalDate.now();
+        System.out.println(localDate); //2024-04-08
+        LocalDate localDate2 = LocalDate.of(2024,06,14);
+        System.out.println(localDate2);
+        LocalDate localDate3 = LocalDate.ofYearDay(2022,360);
+        System.out.println(localDate3);
+        /*Get values from LocalDate*/
+        System.out.println("getMonth(): "+localDate.getMonth()); // APRIL
+        System.out.println("getMonthValue(): "+localDate.getMonthValue()); // 4
+        System.out.println("getDayOfMonth(): "+localDate.getDayOfMonth()); // 8
+        System.out.println("getDayOfWeek(): "+localDate.getDayOfWeek()); // MONDAY
+        System.out.println("getDayOfYear(): "+localDate.getDayOfYear()); //99
+        System.out.println("Day of month using get(): "+localDate.get(ChronoField.DAY_OF_MONTH)); // 8
+    }
+}
+Note: get() method will take input as TemporalField interface as input. So ChronoField is an enum to implement TemporalField interface. So ChronoField enum having lot of constants to get the Date details.
+-------------------------------------------------------------------------------------------
+LocalDate - Modify LocalDate object values:
+------------------------------------------------------------------------------
+/*Modifying LocalDate object values*/
+        System.out.println("Increase Date value by 2: "+localDate.plusDays(2)); // 2024-04-10
+        System.out.println("Increase Month value by 2: "+localDate.plusMonths(2)); // 2024-06-08
+        System.out.println("Decrease Month value by 3: "+localDate.minusMonths(3)); // 2024-01-08
+        System.out.println("To change the Year to 2022: "+localDate.withYear(2022)); // 2022-04-08
+
+        System.out.println("Change year with ChronoField: "+localDate.with(ChronoField.YEAR,2020)); // 2020-04-08
+        System.out.println("First day of next month using with method TemporalAdjusters: "+localDate.with(TemporalAdjusters.firstDayOfMonth())); // 2024-04-01
+	System.out.println("Change year with ChronoUnit: "+localDate.minus(1, ChronoUnit.YEARS)); // 2023-04-08
+---------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}
 
 
 
