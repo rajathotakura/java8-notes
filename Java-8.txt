@@ -483,52 +483,133 @@ LocalDate - Modify LocalDate object values:
 	System.out.println("Change year with ChronoUnit: "+localDate.minus(1, ChronoUnit.YEARS)); // 2023-04-08
 ---------------------------------
 
+/*Additional Support methods*/
 
+System.out.println("2024 is leap year or not? "+localDate.isLeapYear()); // true
+        //or
+        System.out.println("is Leap year? "+LocalDate.ofYearDay(2021,30).isLeapYear()); // false
+        //localDate = 2024-04-08
+        //localDate1 = 2024-06-14
+        System.out.println("is equal? "+localDate.isEqual(localDate1)); // false
+        System.out.println("is before? "+localDate.isBefore(localDate1)); // true
+        System.out.println("is after? "+localDate.isAfter(localDate1)); // false
 
+        /*Unsupported*/
+       // System.out.println("subtract minutes: "+localDate.minus(2,ChronoUnit.MINUTES)); // R.E: UnsupportedTemporalTypeException
+        // We can not subtract minutes from LocalDate.
 
+        System.out.println("is supported: "+localDate.isSupported(ChronoUnit.MINUTES)); // false
+	System.out.println("is supported? : "+localDate.isSupported(ChronoUnit.YEARS)); // true
+------------------------------------------------------------------------------
+LocalTime:
+---------------------------------------------------------------------------
+public class LocalTimeExample {
+    public static void main(String[] args) {
+        LocalTime localTime = LocalTime.now();
+        System.out.println("LocalTime: "+localTime);
+        LocalTime localTime1 = LocalTime.of(18,45);
+        System.out.println("localTime.of(hours,minutes): "+localTime1);
+        LocalTime localtime2 = LocalTime.of(10,30,45);
+        System.out.println("localTime.of(hours,minutes,sec) "+localtime2);
+        LocalTime localtime3 = LocalTime.of(21,35,10,485);
+        System.out.println("LocalTime.of(H,M,S,NS)"+localtime3);
 
+        /*Getting time details from LocalTime object*/
 
+        System.out.println("getHours(): "+localTime.getHour()); //17
+        System.out.println("getMinutes(): "+localTime.getMinute()); // 53
+        System.out.println("getHours() using ChronoField: "+localTime.get(ChronoField.CLOCK_HOUR_OF_DAY)); // 17
+        System.out.println("getSeconds() using ChronoField: "+localTime.get(ChronoField.MINUTE_OF_DAY)); //1074
+        System.out.println("getSeconds(): "+localTime.getSecond()); //43
+        System.out.println("toSecondsOfDay(): "+localTime.toSecondOfDay()); // 64607 // represents whole time in Seconds for the day.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        /*Modify values in localtime object*/
+        System.out.println("minus hours: "+ localTime.minusHours(3));
+        System.out.println("minus hours: "+localTime.minus(3, ChronoUnit.HOURS));
+        System.out.println("midnight: "+ localTime.with(LocalTime.MIDNIGHT));
+        System.out.println("change hours: "+localTime.with(ChronoField.HOUR_OF_DAY,5)); // HOURS ALWAYS 5
+        System.out.println("plus minutes: "+localTime.plusMinutes(5));
+        System.out.println("withhour(): "+localTime.withHour(13)); // always hours are 13
+    }
 }
+---------------------------------------------------------------------
+LocalDateTime class: 
+---------------------------------------------------------------------
+of() is factory method
+
+eg:
+public class LocalDateTimeExample {
+    public static void main(String[] args) {
+
+        LocalDateTime localDateTime = LocalDateTime.now();
+        System.out.println("LocalDateTime: "+localDateTime); // 2024-04-11T12:00:58.432252800
+
+        LocalDateTime ldt = LocalDateTime.of(LocalDate.now(), LocalTime.now());
+        System.out.println("LocalDateTime.of() "+ldt); // 2024-04-11T12:00:58.432252800
+        LocalDateTime ldt1 = LocalDateTime.of(2024,02,23,13,55,20,958);
+        System.out.println("LocalDateTime.of(): "+ldt1); // 2024-02-23T13:55:20.000000958
+        //getting date and time from LocalDateTime instance
+        System.out.println("getting hours: "+localDateTime.getHour()); // 13
+        System.out.println("getting minutes: "+localDateTime.getMinute()); // 11
+        System.out.println("getting day: "+localDateTime.getDayOfMonth()); //15
+        System.out.println("getting day: "+localDateTime.getDayOfWeek()); // MONDAY
+        System.out.println("getting day: "+localDateTime.getDayOfYear()); // 106
+        System.out.println("getting day using another way: "+localDateTime.get(ChronoField.DAY_OF_MONTH)); // 15
+        //modifying LocalDateTime
+        System.out.println("Plus Hours: "+localDateTime.plusHours(3));
+        System.out.println("Minus Days: "+localDateTime.minusDays(5));
+        //with() method is very useful to modify the LocalDateTime
+
+        System.out.println("Change minutes: "+localDateTime.withMinute(10)); // minutes always 10
+        System.out.println("Change month: "+localDateTime.withMonth(1)); // month always 1
+        
+
+    }
+}
+------------------------------
+Converting LocalDate / LocalTime to LocalDateTime and viceversa
+------------------------------
+eg:
+LocalDate localDate = LocalDate.of(2020,12,30);
+        System.out.println("atTime(): "+localDate.atTime(16,55)); // 2020-12-30T16:55 // atTime() will return LocalDateTime class with given time.
+        LocalTime localTime = LocalTime.of(18,25,10);
+        System.out.println("atDate(): "+localTime.atDate(LocalDate.of(2021,10,25))); // 2021-10-25T18:25:10 // atDate() will return LocalDateTime class with given date.
+        //getting LocalDate and LocalTime from LocalDateTime instance
+
+        LocalDateTime ldt2 = localTime.atDate(LocalDate.of(2022,10,30));
+        System.out.println("toLocalDate: "+ldt2.toLocalDate()); // 2022-10-30
+        System.out.println("toLocalTime: "+ldt2.toLocalTime()); // 18:25:10
+--------------------------------------------------------------------------------------
+Comparing Dates using Period class:
+--------------------------------------------------------------------------------------
+-> Period is a date-based representation of time in Days, Months and Years and is part of the java.time package
+
+-> Compatible with LocalDate.
+
+-> It represents a Period of Time not just a specific date and time.
+example:
+-> Period period1 = Period.ofDays(10); // represents a Period of 10 Days. ofDays() method is factory method.
+-> Period period2 = Period.ofYears(20); // represents a period of 20 years.
+
+Period: use-case:
+-----------------
+-> Mainly used to calculate the difference between the two dates.
+LocalDate localDate1 = LocalDate.of(2018,01,01);
+LocalDate localDate2 = LocalDate.of(2018,01,31);
+Period period = Period.between(localDate1,localDate2); // caluclates the difference between the two dates.
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
