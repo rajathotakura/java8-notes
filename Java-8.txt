@@ -425,6 +425,7 @@ public class Client14 implements Interface1,Interface4{
 New Date/Time APIs
 ========================================================================================================================================================
 LocalDate, LocalTime and LocalDateTime class introduced in Java 8 as part of java.time pacakge. - new classes are created with the inspiration of Joda-Time library.
+--> Present in java.time package
 --> All these new libraries are immutable to promote functional programming.
 --> Supproting class like Instant, Duration, Period and etc.
 --> LocalDate: Used to represent the date.
@@ -597,6 +598,133 @@ Period: use-case:
 LocalDate localDate1 = LocalDate.of(2018,01,01);
 LocalDate localDate2 = LocalDate.of(2018,01,31);
 Period period = Period.between(localDate1,localDate2); // caluclates the difference between the two dates.
+**** Period is compatible with LocalDate only.
+-> Period class does not contain any LocalTime related methods.
+eg:
+public class ComparingDatesPeriodEx {
+    public static void main(String[] args) {
+
+        LocalDate localDate1 = LocalDate.of(2018,01,01);
+        LocalDate localDate2 = LocalDate.of(2018,8,28);
+
+        //Period period =  Period.between(localDate1,localDate2);
+        Period period = localDate1.until(localDate2);
+        /*until() method is part of LocalDate class.  until() will return Period as return type.*/
+        //System.out.println(period); // P1M27D
+        System.out.println("get Days: "+period.getDays()); // 27 // result is 28-1
+        System.out.println("get months: "+period.getMonths()); // 7 // result is 8-1
+        System.out.println("get years: "+period.getYears()); // 0 // 2018-2018
+
+        // Creating period instance using of...() factory method
+        Period period1 = Period.ofDays(10);
+        System.out.println("period1.getDays(): "+period1.getDays());
+        Period period2 = Period.ofMonths(22);
+        System.out.println("period2.getMonths(): "+period2.getMonths());
+        Period period3 = Period.ofYears(10);
+        System.out.println("period3.getYears(): "+period3.getYears());
+        Period period4 = Period.ofWeeks(35);
+        System.out.println("period4.getWeeks(): "+period4.getDays()); // 245
+
+        System.out.println("period3.getMonths(): "+period3.getMonths()); // 0 // this is not right ways to find total months
+        System.out.println("period3.toTotalMonths(): "+period3.toTotalMonths()); // 120
+        /*by using Period class also we can compare dates using between(). i.e. Period.between(...)*/
+
+        Period period5 = Period.between(localDate1,localDate2);
+        System.out.println("Period: "+period5.getDays()+":"+period5.getMonths()+":"+period5.getYears());
+        //*** Period.between() is compatible with LocalDate only. it will not accept LocalTime
+        //Period.between(LocalTime.now(),LocalTime.now().plusHours(24)); // will not accept
+    }
+}
+-------------------------------------
+Duration:
+-------------------------------------
+-> A time based representation of time in hours, minutes, seconds and nanoseconds.
+-> Compatible with LocalTime and LocalDateTime.
+-> Duration class does not contain any LocalDate related methods.
+-> It represents duration of time not just a specific time.
+eg:
+Duration hours = Duration.ofHours(3); // it represents the duration of 3 hours.
+Duration minutes = Duration.ofMinutes(3); // it represents the duration of 3 minutes.
+
+Duration: Use-case
+------------------
+It can be used to calculate the difference between the time objects such as LocalTime and LocalDateTime..
+Eg:
+LocalTime localTime1 = LocalTime.of(7,20);
+LocalTime localTime2 = LocalTime.of(8,20);
+Duration duration = Duration.between(localTime1,localTime2);
+Eg:
+public class ComparingTimeDurationEx {
+    public static void main(String[] args) {
+        LocalTime localTime1 = LocalTime.of(7,20);
+        LocalTime localTime2 = LocalTime.of(8,20);
+        Duration duration = Duration.between(localTime1,localTime2);
+        System.out.println("duration.toMinutes(): "+duration.toMinutes()); // PT1H
+        //until() is taking 2 parameters, 1 is second localTime instance and 2nd parameter is to represent the output in which format
+        long diff = localTime1.until(localTime2, ChronoUnit.MINUTES);
+        System.out.println("localTime.until(): "+diff); // 60
+        Duration duration1 = Duration.ofHours(3);
+        System.out.println("duration1.toMinutes(): "+duration1.toMinutes());
+        //let's try to pass date info to Duration class. let's see what will happen
+        LocalDate localDate1 = LocalDate.now();
+        LocalDate localDate2 = LocalDate.now().plusDays(5);
+        //Duration duration2 = Duration.between(localDate1,localDate2); // R.E: UnsupportedTemporalTypeException
+        
+    }
+}
+
+***********
+Finally: If we have a use-case like time related logic like find the difference between 2 times then use Duration. If Date related comparisions then use Period class. 
+
+-------------------------------------------------------------------------
+Instant:
+------------------------------------------------------------------------
+--> The above class like Duration or Period are represent in human readable format.
+--> Instant represents the time in machine readable format.
+eg:
+Instant ins = Instant.now();
+--> Represents the time in seconds from January 01,1970(EPOCH) to current time as a huge number.
+
+eg:
+public class InstantEx {
+    public static void main(String[] args) {
+        Instant ins = Instant.now();
+        System.out.println("Instant: "+ins); // 2024-04-16T07:51:53.714039600Z // it will print in human-readable format.
+        //getEpochSecond() method will print the time in seconds from 01 Jan 1970 to till date in seconds. each day seconds is 86400
+        System.out.println(ins.getEpochSecond()); //1713254150
+        System.out.println(Instant.ofEpochSecond(0)); // 1970-01-01T00:00:00Z
+        Instant ins1 = Instant.now();
+        Duration diff = Duration.between(ins,ins1);
+        System.out.println("diff: "+diff.getNano()); // 10028700
+    }
+}
+-----------------------------------------------
+Time Zones:
+-----------------------------------------------
+-> LocalDate, LocalTime or LocalDateTime classes are for Local Time Zone represents.
+-> Java8 introduced time zones classes to represents worldwide times.
+-> ZonedDateTime,ZoneID, ZoneOffset etc.
+--> ZonedDateTime - Represents the date/time with its time zone.
+	eg:
+	2018-07-18T08:04:14.541-05:00[America/Chicago]
+--> ZoneOffset -> -05:00
+	--> it represents offset time from the UDC time.
+--> ZoneId -> America/Chicago
+	--> it represents the zone that time belongs too.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
