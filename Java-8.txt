@@ -711,6 +711,151 @@ Time Zones:
 	--> it represents offset time from the UDC time.
 --> ZoneId -> [Asia/Calcutta]
 	--> it represents the zone that time belongs too.
+Eg:
+public class ZonedDateTimeExample {
+    public static void main(String[] args) {
+        ZonedDateTime zonedDateTime = ZonedDateTime.now();
+        System.out.println("zonedDateTime: "+zonedDateTime); //2024-04-16T13:40:38.122378700+05:30[Asia/Calcutta]
+        System.out.println("zone offset: "+zonedDateTime.getOffset()); // +05:30
+        System.out.println("zone id: "+zonedDateTime.getZone()); // Asia/Calcutta
+        //System.out.println("Supported Zone Ids: "+ ZoneId.getAvailableZoneIds()); // will print all the zones
+        //or
+        /*ZoneId.getAvailableZoneIds()
+                .stream()
+                .forEach(System.out::println);*/
+        System.out.println("How many zones available? : "+ZoneId.getAvailableZoneIds().size()); // 603
+        //USA supports different time zones like CST,EST,MST and PST.
+        //how to get different time zone time details
+        System.out.println("India IST  : "+ZonedDateTime.now(ZoneId.of("Asia/Calcutta")));
+        System.out.println("Chicago CST: "+ZonedDateTime.now(ZoneId.of("America/Chicago")));
+        System.out.println("Detroit EST: "+ZonedDateTime.now(ZoneId.of("America/Detroit")));
+        System.out.println("LA PST     : "+ZonedDateTime.now(ZoneId.of("America/Los_Angeles")));
+        System.out.println("Denver MST : "+ZonedDateTime.now(ZoneId.of("America/Denver")));
+        //try with overloaded now(Clock clock)
+
+        System.out.println("ZonedDataTime.now(Clock clock) : India IST: "+ZonedDateTime.now(Clock.system(ZoneId.of("Asia/Calcutta"))));
+        //Time Zone using LocalDateTime.now(ZoneId). It will print only time. but not off set or zone id.
+        LocalDateTime localDateTimeZoneId = LocalDateTime.now(ZoneId.of("America/Denver"));
+        System.out.println("LocalDateTime.now(ZoneId): "+localDateTimeZoneId); // 2024-04-16T03:28:43.678499100
+        //Time Zone using LocalDateTime.now(Clock)
+
+        LocalDateTime localDateTimeClock = LocalDateTime.now(Clock.system(ZoneId.of("America/Denver")));
+        System.out.println("LocalDateTime.now(Clock): "+localDateTimeClock);
+
+        //using Instant class print Zone related information
+        Instant instantClock = Instant.now(Clock.system(ZoneId.of("America/Denver")));
+        System.out.println("Instant.now(Clock): "+instantClock);
+        //or
+        LocalDateTime localDateTimeInstant = LocalDateTime.ofInstant(Instant.now(),ZoneId.of("America/Denver"));
+        System.out.println("LocalDateTimeInstant: "+localDateTimeInstant);
+        //current system zoneId fetching
+        LocalDateTime localDateTimeInstantSystemZoneId = LocalDateTime.ofInstant(Instant.now(),ZoneId.systemDefault());
+        System.out.println("LocalDateTimeInstant current system zone: "+localDateTimeInstantSystemZoneId);
+    }
+}
+--------------------------------------------------
+Convert LocalDateTime to ZonedLocalDate and time:
+--------------------------------------------------
+ LocalDateTime localDateTime1 = LocalDateTime.now();
+        System.out.println("localDateTime1: "+localDateTime1);
+        //ZonedDateTime localDateTimetoZonedDateTime = localDateTime1.atZone(ZoneId.of("America/Denver")); // It will add zone id to localDateTime instance. here localdateTime instance having india time and zone id is "America/Denver". So while converting from localDateTime to ZonedDatetime must and should use appropriate zone id.
+        ZonedDateTime localDateTimetoZonedDateTime = localDateTime1.atZone(ZoneId.of("Asia/Calcutta")); // now it will print localdatetime with asia zone. This is correct combination.
+        System.out.println("LocalDateTime to ZonedDateTime = "+localDateTimetoZonedDateTime);
+        //using Instance class conversion
+        ZonedDateTime instantToZonedDateTime = Instant.now().atZone(ZoneId.of("America/Denver")); // This will print proper zone date and time.
+        System.out.println("Instant to ZonedDateTime: "+instantToZonedDateTime);
+
+        //to Add offSet details
+        //OffsetDateTime zoneOffSet = localDateTime1.atOffset(ZoneOffset.ofHours(-6)); // This combination is wrong. Set the proper offSet to localDateTime1 instance. This will add only offSet but not zoneId
+        OffsetDateTime zoneOffSet = localDateTime1.atOffset(ZoneOffset.ofHours(+5));
+        System.out.println("set offSet: "+zoneOffSet);
+-------------------------------------------------------------------------------------
+Converting java.util.Date/java.sql.Date to LocalDate
+-----------------------------------------------------------
+public class DateToLocalDateExample {
+    public static void main(String[] args) {
+
+        /*java.util.Date to LocalDate conversion and vice versa*/
+        Date dateUtil = new Date();
+        System.out.println("Date from util package: "+dateUtil); // Wed Apr 17 14:18:05 IST 2024
+        //conversion
+        //explanation
+        /*dateUtil.toInstant() will return Instant class. instant.atZone() will return ZonedDateTime. then we will call either toLocalDate() or toLocalTime() or toLocalDateTime() */
+        LocalDate dateToLocalDate = dateUtil.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        System.out.println("Date to LocalDate: "+dateToLocalDate); // 2024-04-17
+
+        // now reverse conversion like LocalDate to Date
+        Instant instant = dateToLocalDate.atTime(LocalTime.now()).atZone(ZoneId.systemDefault()).toInstant();
+        Date localDatetoDate = new Date().from(instant);
+        System.out.println("LocalDate to Date of util package: "+localDatetoDate); // Wed Apr 17 14:52:10 IST 2024
+
+        /*java.sqlDate to LocalDate conversion and vice versa*/
+
+        //LocalDate to java.sql.Date conversion
+        java.sql.Date dateSQL = java.sql.Date.valueOf(dateToLocalDate);
+        System.out.println("LocalDate to java.sql.Date: "+ dateSQL); // 2024-04-17
+        //java.sql.Date to LocalDate
+        LocalDate sqlDateToLocalDate = dateSQL.toLocalDate();
+        System.out.println("SQL Date to LocalDate: "+sqlDateToLocalDate); // 2024-04-17
+    }
+}
+------------------------------------------------------------------------
+DateTimeFormatter:
+------------------------------------------------------------------------
+--> Introduced in java 8 and part of the package java.time.format.
+--> Used to parse and format the LocalDate, LocalTime and LocalDateTime.
+Parse and format:
+------------------
+--> parse: Converting a String to a LocalDate or LocalTime or LocalDateTime.
+--> format: Converting a LocalDate or LocalTime or LocalDateTime to String.
+Eg:
+public class FormattingLocalDateExample {
+
+    public static void parseLocalDate() {
+        String date = "2024-04-17";
+        LocalDate parseDate = LocalDate.parse(date);
+        System.out.println("String to LocalDate: "+parseDate);
+        // 2nd way
+        LocalDate parseDate1 = LocalDate.parse(date, DateTimeFormatter.ISO_LOCAL_DATE);
+        System.out.println("String to LocalDate 2nd Way: "+parseDate1);
+        // 3rd way
+        String date1 = "20240417"; // yyyyMMdd
+        LocalDate parseDate2 = LocalDate.parse(date1,DateTimeFormatter.BASIC_ISO_DATE);
+        System.out.println("String to LocalDate 3rd way: "+parseDate2);
+
+        /*Custom defined date format*/
+        // in this case we have to build our own parse using DateTimeFormatter class
+        String date2 = "2024|04|17";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy|MM|dd");
+        LocalDate customDateLocalDate = LocalDate.parse(date2,dateTimeFormatter);
+        System.out.println("Custom date formatter: "+customDateLocalDate);
+
+        String date3 = "2024*04*17";
+        DateTimeFormatter dateTimeFormatter1 = DateTimeFormatter.ofPattern("yyyy*MM*dd");
+        LocalDate customDateLocalDate1 = LocalDate.parse(date3,dateTimeFormatter1);
+        System.out.println("Custom date formatter: "+customDateLocalDate1);
+        /*
+        * We should not use reserved key words like # in String of Date like "2024#04#17"
+        * */
+
+        /*String date4 = "2024#04#17";
+        DateTimeFormatter dateTimeFormatter2 = DateTimeFormatter.ofPattern("yyyy#MM#dd");
+        LocalDate customDateLocalDate2 = LocalDate.parse(date4,dateTimeFormatter1);
+        System.out.println("Custom date formatter: "+customDateLocalDate2); //java.lang.IllegalArgumentException: Pattern includes reserved character: '#'*/
+    }
+    public static void formatLocalDate() {
+        /*LocalDate to String conversion*/
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDate localDate = LocalDate.now();
+        String localDateToString = localDate.format(dateTimeFormatter);
+        System.out.println("LocalDate to String: "+localDateToString);
+    }
+    public static void main(String[] args) {
+        parseLocalDate();
+        formatLocalDate();
+    }
+}
+--------------------------------------------------------
 
 
 
