@@ -804,10 +804,15 @@ DateTimeFormatter:
 ------------------------------------------------------------------------
 --> Introduced in java 8 and part of the package java.time.format.
 --> Used to parse and format the LocalDate, LocalTime and LocalDateTime.
+***** --> Lower and upper case alphabets plays major role while formatting.
+		eg: yyyy:MM:ss or YYYY:MM:SS --> both will print different formats. So please refer java api document.
 Parse and format:
 ------------------
 --> parse: Converting a String to a LocalDate or LocalTime or LocalDateTime.
 --> format: Converting a LocalDate or LocalTime or LocalDateTime to String.
+
+Formatting LocalDate:
+---------------------
 Eg:
 public class FormattingLocalDateExample {
 
@@ -856,7 +861,48 @@ public class FormattingLocalDateExample {
     }
 }
 --------------------------------------------------------
+Formatting LocalTime:
+--------------------------------------------------------
+Eg:
+public class FormattingLocalTimeExample {
+    public static void parseTime() {
 
+        /*Parse means convert from String to LocalTime*/
+        String time = "18:30";
+        LocalTime localTime = LocalTime.parse(time);
+        System.out.println("default String to LocalTime: "+localTime); // 18:30
+
+        LocalTime localTime1 = LocalTime.parse(time,DateTimeFormatter.ISO_LOCAL_TIME);
+        System.out.println("String to LocalTime: "+localTime1); // 18:30
+
+        /*Custom defined formats*/
+
+        String time1 = "18*30*50";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH*mm*ss"); // hh represents 12 hours and HH represents 24 hours format. mm is for minutes and MM is for months. becarefull.
+        LocalTime localTime2 = LocalTime.parse(time1,dateTimeFormatter);
+        System.out.println("Custom String to LocalTime: "+localTime2);
+    }
+    public static void formatTime() {
+        /*convert from LocalTime to String*/
+        LocalTime localTime = LocalTime.now();
+        String localTimeToString = localTime.toString();
+        System.out.println("LocalTime to String: "+localTimeToString);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH*mm*ss");
+        String localTimeToString1 = localTime.format(dateTimeFormatter);
+        System.out.println("LocalTime to String using DTF: "+localTimeToString1); // 18*48*36
+
+        DateTimeFormatter dateTimeFormatter1 = DateTimeFormatter.ofPattern("HH|mm|ss");
+        String localTimeToString2 = localTime.format(dateTimeFormatter1);
+        System.out.println("LocalTime to String using DTF: "+localTimeToString2); // 18|50|35
+    }
+    public static void main(String[] args) {
+        parseTime();
+        formatTime();
+    }
+}
+----------------------------------------------------------------
+Format / parse LocalDateTime using DateTimeFormatter:
+----------------------------------------------------------------
 
 
 
