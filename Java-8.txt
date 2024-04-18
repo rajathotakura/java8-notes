@@ -903,7 +903,50 @@ public class FormattingLocalTimeExample {
 ----------------------------------------------------------------
 Format / parse LocalDateTime using DateTimeFormatter:
 ----------------------------------------------------------------
+eg:
+public class FormattingLocalDateTimeExample {
+    public static void parseLocalDateTime(){
+        /*converting String to LocalDateTime*/
+        String dateTime = "2018-04-17T15:45:55";
+        LocalDateTime localDateTime = LocalDateTime.parse(dateTime);
+        System.out.println("String to LocalDateTime: "+localDateTime);
+        LocalDateTime localDateTime1 = LocalDateTime.parse(dateTime, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        System.out.println("String to LocalDateTime using DTF: "+localDateTime1);
 
+        /*Custom DateTimeFormatter*/
+
+        String dateTime1 = "2018-04-17T15|45|55";
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH|mm|ss");
+        LocalDateTime localDateTime2 =  LocalDateTime.parse(dateTime1,dateTimeFormatter);
+        System.out.println("Custom date time formatter: "+localDateTime2); //2018-04-17T15:45:55
+
+        String dateTime2 = "2018-04-17abcd15|45|55";
+        DateTimeFormatter dateTimeFormatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd'abcd'HH|mm|ss");
+        LocalDateTime localDateTime3 = LocalDateTime.parse(dateTime2,dateTimeFormatter1);
+        System.out.println("Custom date time formatter: "+localDateTime3); // 2018-04-17T15:45:55
+    }
+    public static void formatLocalDateTime(){
+        /*converting LocalDateTime to String*/
+        LocalDateTime localDateTime = LocalDateTime.now();
+        String localDateTimeToString = localDateTime.toString();
+        System.out.println("LocalDateTime to String using toString(): "+localDateTimeToString); // 2024-04-18T16:15:58.516047500
+        //or
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'abc'HH|mm|ss");
+        String localDateTimeToString1 = localDateTime.format(dateTimeFormatter);
+        System.out.println("LocalDateTime to String using formatter:"+localDateTimeToString1); // 2024-04-18abc16|15|58
+        //or
+        DateTimeFormatter dateTimeFormatter1 = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH|mm|ss");
+        String localDateTimeToString2 = localDateTime.format(dateTimeFormatter1);
+        System.out.println("LocalDateTime to String using formatter:"+localDateTimeToString2); // 2024-04-18T16|19|03
+    }
+    public static void main(String[] args) {
+        parseLocalDateTime();
+        formatLocalDateTime();
+    }
+}
+=========================================================================================================
+Parallel and Asynchronus Programming in Modern Java:
+=========================================================================================================
 
 
 
