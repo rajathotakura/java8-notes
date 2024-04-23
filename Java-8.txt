@@ -1,5 +1,98 @@
+Why Java 8?
+===========
+--> Java creators wanted to introduced the Functional features as
+	-> Lambdas
+	-> Functional Interfaces
+	-> Streams
+	-> Optional and etc.,
+--> Before java 8, we used threads for concurrency. 
+--> New java 8 features simplify the concurrency operations.
+Functional Programming:
+-----------------------
+--> Embraces object immutability.
+--> More concise and readable code.
+--> We can assign a function to variable and that variable we can pass to another method.
+	Eg:
+	Function<String,String> addSomeString = name->name.toUpperCase().concat("default");
+--> We can write code using Declarative approach rather than imperative approach.
+Imperative Style vs Declarative Style of programming:
+-----------------------------------------------------
+Imperative Style:
+-----------------------
+--> Focus on how to perform the operations.
+--> Embrace object mutability. (We can modify the object).
+--> This style of programming lists the step by step of instructions on how to achieve an objective.
+--> We write the code on what needs to be done in each step.
+--> Imperative style is used with classic Object Oriented Programming.
+Declarative Style:
+------------------
+--> Focuses on what is the result you want. it does not bother about how to get the result.
+--> Embraces object immutability.
+--> Use the functions that are already part of the library to achieve an objective.
+--> Functional programming uses the concept of declarative programming.
+eg:
+public class ImperativeVsDeclarativeEx1 {
+    public static void main(String[] args) {
+        /*
+        * Imperative style of programming
+         */
+        int sum = 0;
+        for(int i=1;i<=100;i++) {
+            sum+=i;
+        }
+        System.out.println("Sum using imperative approach: "+sum);
+        /*
+        * Declarative style of programming
+        */
+        int sum1 = IntStream.rangeClosed(0,100)
+                .parallel() // if it is multi-threaded environment. then using parallel(), we will get same result with better performace.
+                .sum();
+        System.out.println("Sum using declarative approach: "+sum1);
+    }
+}
+
+Eg:2:
+-----
+public class ImperativeVsDeclarativeEx2 {
+    public static void main(String[] args) {
+        /*Remove duplicates in List*/
+        List<Integer> intList = List.of(4,6,2,4,8,6,7,3);
+        List<Integer> intList1 = Arrays.asList(4,6,2,4,8,6,7,3);
+        /*Imperative style*/
+        List<Integer> uniqList = new ArrayList<>();
+        for(Integer i : intList1) {
+            if(!uniqList.contains(i)) {
+                uniqList.add(i);
+            }
+        }
+        System.out.println("Unique List: "+uniqList);
+        /*Declarative style*/
+        List<Integer> uniqList1 =  intList.stream()
+                .distinct()
+                .collect(Collectors.toList());
+        System.out.println("Unique List using Declarative: "+uniqList1);
+    }
+}
+=================================================================
+Lambda:
+=================================================================
+--> Lambda is equivalent to function(method) without a name.
+--> Lambda's are also called as Anonymous functions.
+	-> Method parameters
+	-> method body
+	-> return type
+--> Lambdas are not tied to any class like a regular method.
+--> Lambda can also be assigned to variable and passed around.
+syntax:
+	() -> {}.
+Usages of Lambda:
+-----------------
+--> Lambda is mainly used to implement Functional Interfaces.
+--> 
+
+==================================================================
 Optional Class:
-----------------
+==================================================================
 In Java, a commonly repeated exception is a NullPointerException. So to avoid NullPointerException, Java people introduced Optional Classes in the Java 8 version.
 or
 It is used to represent non-null value in java. It is used to avoid NullPointerException and avoid having too many null checks(unnecessary null checks).
@@ -947,6 +1040,146 @@ public class FormattingLocalDateTimeExample {
 =========================================================================================================
 Parallel and Asynchronus Programming in Modern Java:
 =========================================================================================================
+--> fast paced environment
+--> In Software Programming:
+	--> Code that we write should execute faster
+--> Goal of Asynchronous and Paralle Programming:
+	--> Provide Techniques to improve the performance of the code.
+---------------------------
+Technology Advancements:
+--------------------------
+Hardware vs Software:
+---------------------
+Hardware level:
+---------------
+-> Devices or computers comes up with Mutliple cores
+-> Developer needs to learn programming patterns to maximize the use of multiple cores.
+-> Apply the parallel programming concepts
+-> for this use Parallel Streams
+-> best example Threads
+----------------
+Software:
+----------------
+-> MicroServices Archetecture style
+-> Blocking I/O calls are commoin in Microservices Architecture. This also impact the latency and performace of the application.
+-> Apply asynchronous programming concepts.
+-> for this use CompletableFuture.
+-> best for Functional style of Programming 
+
+-----------------------------------------------------------------------------------
+Concurrency vs parallelism:
+------------------------------------------------
+-> Concurrency is a concept where two or more task can run simultaneously
+-> in Java, Concurrency is achieved using Threads.
+	-> Are the tasks running in interleaved fashion?
+		ans: if system having only single core then, that single core will handle all the threads.
+	-> Are the tasks running simultaneously?
+		ans: if system having multiple cores then each core will handle one thread. This means tasks are running simultaneously.
+
+for Example: 
+public class BasicMultithreading {
+    private static String result="";
+    private static void hello() throws InterruptedException{
+        Thread.sleep(500);
+        result = result.concat("Hello");
+    }
+    private static void world() throws InterruptedException{
+        Thread.sleep(600);
+        result = result.concat(" world");
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+
+        Thread helloThread = new Thread(()-> {
+            try {
+                hello();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        Thread worldThread = new Thread(()->{
+            try {
+                world();
+            }catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        helloThread.start();
+        worldThread.start();
+
+        helloThread.join();
+        worldThread.join();
+        System.out.println("result is: "+result);
+    }
+}
+
+issues:
+Threads normally need to interact with one another.
+	--> Race condition
+	--> DeadLocal and more.
+To handle these issues, we have several options:
+	--> Synchronized Locks, Semaphores
+	--> Reentrant Locks, Semaphores
+	--> Concurrent Collections
+	--> Conditional Objects and More..
+---------------------------------------------------
+Now lets talk about
+Parallelism:
+----------------------------------------------------
+-> Parallelism is a concept in which tasks are literally going to run in parallel.
+-> Parallelism involves these steps:
+	-> Decomposing the tasks in to SubTasks(Forking)
+	-> Execute the subtasks in sequential
+	-> Joining the results of the tasks(join)
+	---> Whole process is also called Fork/Join.
+Parallelism was introduced in java 7.
+Eg:
+---
+public class BasicParallelism {
+    public static void main(String[] args) {
+        //use-case transform to Uppercase
+        //[Bob, Jill, Rick] -> [BOB,JILL,RICK]
+        List<String> nameList = List.of("Bob","Jill","Rick");
+        System.out.println("Name List: "+nameList);
+        List<String> parallelList =nameList.parallelStream()    //nameList.stream()
+                                                                //.parallel()
+                .map(String::toUpperCase)
+                .collect(Collectors.toList());
+        System.out.println("Parallel list: "+parallelList);
+    }
+}
+Note: ParallelStream is nothing but fork and join.
+--------------------------------------------------
+Finally Concurrency vs Parallelism:
+-------------------------------------------
+Concurrency:
+-------------
+-> Concurrency is a concept where two or more tasks can run in simultaneously.
+-> Concurrency can be implemented in single or multiple cores
+-> Concurrency is about correctly and efficiently controlling access to shared resources.
+----------
+Parallelism:
+------------
+-> Parallelism is a concept where two or more tasks are literally running in parallel.
+-> Parallelism can only be implemented in a multi-core machine.
+-> Parallelism is about using more resources to access the result faster.
+---------------------------------------------------------------------------------
+Threads and its limitations:
+----------------------------------------------------------------------------------
+--> Threads allowed the developers to write asynchronous style of code.
+--> 
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
