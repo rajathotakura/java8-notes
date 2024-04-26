@@ -85,10 +85,25 @@ Lambda:
 --> Lambda can also be assigned to variable and passed around.
 syntax:
 	() -> {}.
+-----------------
 Usages of Lambda:
 -----------------
 --> Lambda is mainly used to implement Functional Interfaces.
---> 
+--> Functional Interfaces, which contains only 1 abstract method and any number of default and static methods are called functional interfaces.
+	eg:
+	@FunctionalInterface
+	public interface Comparator<T> {
+		int compare(T o1, T o2);
+	}
+	
+	@FunctionalInterface
+	public interface Runnable {
+		
+		public abstract void run();
+	}
+
+Eg: Lets code our first Lambda - Implement Runnable using Lambda
+
 
 ==================================================================
 Optional Class:
