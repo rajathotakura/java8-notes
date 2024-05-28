@@ -102,9 +102,72 @@ Usages of Lambda:
 		public abstract void run();
 	}
 
-Eg: Lets code our first Lambda - Implement Runnable using Lambda
+Eg: Lets code our first Lambda - Implement Runnable using Lambda:
+-----------------------------------------------------------------
+Old Style:
+----------
+public class OldRunnableImplementation {
+	public staitc void main() {
+		
+		Thread thread = new Thread(new Runnable(){
 
-
+			public void run() {
+				System.out.println("Old Style");
+			}
+		};); 
+		thread.start();
+		//or
+		Runnable runnable = new Runnable() {
+			
+			public void run() {
+				System.out.println("Another Old Style");
+			}
+		};
+		new Thread(runnable).start();
+	}
+	//java 8 lambda syntax
+	
+	Runnable runnable = () -> System.out.println("new style");
+	new Thread(runnable).start();
+	//or
+	new Thread(() -> System.out.println("new Style")).start();
+	
+}
+---------------------------------------
+-> Implement Comparator interface using Lambda:
+-----------------------------------------------
+//Using old method:
+-------------------
+public class ComparatorInterfaceImpl {
+	public static void main(String args[]) {
+		
+		Comparator<Integer> comp = new Comparator<Integer>() {
+			public int compare(Integer i1,Integer i2) {
+				return i1.compareTo(i2);
+			}
+		};	
+		System.out.println("Result of Comparator: "+comp.compare(10,20));	
+	
+		// using lambda expression
+	
+		Comparator<Integer> comp = (i1,i2) -> i1.compareTo(i2);
+	}
+}
+==================================================================
+Lambda vs Functional Interfaces:
+==================================================================
+-> Functional interfaces exists in java since java 1.0
+-> Any interface which contains exactly only one abstract method is called Functional Interface.
+-> @FunctionalInterface introduced in java 1.8 and all the functional interfaces which annotated with @FunctionalInterface. This annotation is optional.
+-> New FunctionalInterfaces introduced in java 1.8:
+	-> Predicate, BiPredicate
+	-> Function, BiFunction, UnaryOperator, BinaryOperator
+	-> Consumer, BiConsumer
+	-> Supplier
+-> Consumer FunctionalInterface practicals:
+-------------------------------------------
+-> Available in java.util.function package
+-> 
 ==================================================================
 Optional Class:
 ==================================================================
