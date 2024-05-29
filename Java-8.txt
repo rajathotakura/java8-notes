@@ -167,7 +167,77 @@ Lambda vs Functional Interfaces:
 -> Consumer FunctionalInterface practicals:
 -------------------------------------------
 -> Available in java.util.function package
--> 
+-> Eg: 1) public class ConsumerExample {
+	public static void main(String args[]) {
+		
+		Consumer con = name -> System.out.println("name length: "+ name.length()); 
+
+		con.accept("Raja");
+	}
+}
+-> Eg: 2) 
+	public static void printStudents() {
+		
+		Consumer conStudent = student -> System.out.println(student);
+		List<Student> stuList = StudentDatabase.getAllStudentDetails();
+		stuList.forEach(conStudent);
+	}
+-> Eg: 3)
+	public static void printStudentNameAndActivities() {
+		Consumer nameConsumer = s -> System.out.println(s.getName());
+		Consumer activityConsumer = s-> System.out.println(s.getActivities());
+		List<Student> stuList = StudentDatabase.getAllStudentDetails();
+		stuList.forEach(nameConsumer.andThen(activityConsumer));// This is called consumer chain
+	}
+-> Eg: 4) // print list of students whose grade is >3
+	public static void getDetails() {
+		
+		Consumer nameConsumer = s -> System.out.println(s.getName());
+		Consumer activityConsumer = s-> System.out.println(s.getActivities());
+		Consumer stCon = s -> System.out.println(s.getGrade()>3);
+		List<Student> stList = StudentDatabase.getStudentDetails();
+		
+		stList.forEach(student -> {
+
+			if(student.getGrade()>=3) {
+				nameConsumer.andThen(activityConsumer).accept(student);
+			} 
+	
+			//or
+
+			if(student.getGrade()>=3 && student.getGPA()>=8) {
+				nameConsumer.andThen(activityConsumer).accept(student);  --> here we can call andThen() method any number of times.
+			} 
+
+		};		
+	}
+-> Here lambda expression promotes the code reusability.
+-> if(student.getGrade()>=3 && student.getGPA()>=8) -> here if we want reuse the condition like student.getGrade()>=3, then the code gets duplicated. to overcome this, we have Function Functional Interface.
+------------------------------------------------------------------------------------------------
+=> BiConsumer:
+--------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ==================================================================
 Optional Class:
 ==================================================================
