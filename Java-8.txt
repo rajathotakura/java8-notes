@@ -157,6 +157,8 @@ public class ComparatorInterfaceImpl {
 Lambda vs Functional Interfaces:
 ==================================================================
 -> Functional Interfaces main purpose is, Code reusability, mainly we can reuse the same functional interface code across the project.
+-> Functional interfaces avoid code duplicate. common functionality we can declare in top of the class and we can re-use in entire class. Or we can declare common code in utility code and re-use that utility class.
+-> Lambda expression we can assign to a variable and reuse that variable just like normal variable, in entire class.
 -> Functional interfaces exists in java since java 1.0
 -> Any interface which contains exactly only one abstract method is called Functional Interface.
 -> @FunctionalInterface introduced in java 1.8 and all the functional interfaces which annotated with @FunctionalInterface. This annotation is optional.
@@ -290,12 +292,41 @@ Eg: Student Collection example using Predicate:
 public class StudentPredicateExample {
 	
 	static Predicate<Student> stPred = student -> student.getGrade()>3;
+	static Predicate<Student> stPred1 = st -> st.getGpa()>3;
 	static List<Student> stList = StudentDatabase.getAllStudents();
 	public static void main(String args[]) {
-			stList.stream().filter(stPred).forEach(System.out::println);
+		stList.forEach(student -> {
+			if(stPred.test(student)) {
+
+				System.out.println(student)
+			}
+		});
+	}
+	public void filterGpaGrade() {
+	
+		stList.forEach(st-> {
+			//if(stPred.and(stPred1).test(st)) {
+			//if(stPred.or(stPred1).test(st)) {
+			if(stPred.negate(stPred1.test(st)) {
+				System.out.println(st);
+			}else { // this else part is only for negate method.
+				System.out.println(st); 
+			}
+		});
 	}
 }
+------------------------------------------------------
+=> Combining Predicate and Consumer:
+------------------------------------------------------
+-> Eg: -> 
+-> Above example we created static variable to re-use the functionality.
+-> This time we are going with instance method with lambda expression. Because lambda expression behaves like instance method and static method aswell.
+public class PredicateConsumerExample {
 
+	public static void main(String args[]) {
+		
+	}
+}
 
 
 
