@@ -156,6 +156,7 @@ public class ComparatorInterfaceImpl {
 ==================================================================
 Lambda vs Functional Interfaces:
 ==================================================================
+-> Functional Interfaces main purpose is, Code reusability, mainly we can reuse the same functional interface code across the project.
 -> Functional interfaces exists in java since java 1.0
 -> Any interface which contains exactly only one abstract method is called Functional Interface.
 -> @FunctionalInterface introduced in java 1.8 and all the functional interfaces which annotated with @FunctionalInterface. This annotation is optional.
@@ -167,6 +168,10 @@ Lambda vs Functional Interfaces:
 -> Consumer FunctionalInterface practicals:
 -------------------------------------------
 -> Available in java.util.function package
+-> It is having 2 methods: 
+	1) void accept(T t) -> abstract method
+	2) andThen() -> default method
+-> It accepts only 1 input value.
 -> Eg: 1) public class ConsumerExample {
 	public static void main(String args[]) {
 		
@@ -216,6 +221,102 @@ Lambda vs Functional Interfaces:
 ------------------------------------------------------------------------------------------------
 => BiConsumer:
 --------------
+-> Available in java.util.function package
+-> It is having 2 methods: 
+	1) void accept(T t, U u) -> abstract method
+	2) andThen() -> default method
+-> It accepts 2 inputs.
+-> Eg: 1)
+public class BiConsumerExample {
+	public static void main(String args[]) {
+		
+		BiConsumer<Integer,Integer> biCA = (i1,i2) -> System.out.println("Addition of 2 numbers is: "+(i1+i2));
+		
+		biCA.accept(10,20);
+		BiConsumer<Integer,Integer> biCM = (i1,i2) -> System.out.println("Multiplication of 2 numbers is: "+(i1*i2));
+		biCM.accept(10,20);
+		
+	//using andThen() method
+		biCA.andThen(bicM).accept(10,20);
+	}
+}
+
+public static void nameAndActivity() {
+	List<Student> stList = StudentDataBase.getAllStudents();
+	//using Consumer
+	Consumer nameCon = s -> System.out.println(s.getName());
+	Consumer acCon = s -> System.out.println(s.getActivity());
+	//using BiConsumer
+	BiConsumer<String, List<String> biCon = (name,activities) -> System.out.println(name+" : "+activites);
+	stList.forEach(s -> biCon.accept(s.getName(),s.getActivites()));
+}
+-------------------------------------------------------------------
+=> Predicate Functional Interface:
+----------------------------------
+-> Available in java.util.function package
+-> It is having 2 methods: 
+	1) boolean test(T t) -> abstract method
+	2) and() -> default method 
+	3) or() -> default method
+	4) negate() -> default method -> will return reverse output. like, if actual result is true, then it will return false. if actual result is false, then it will return true. 
+-> It accepts only 1 input.
+-> Eg: 1) 
+public class PredicateExample {
+	static Predicate p = i -> i%2==0;
+	static Predicate p2 = i-> i%5 ==0;
+	public static void main(String args[]) {
+		Predicate p = i -> i%2==0;
+		//boolean result = p.test(10);
+		//System.out.println("result: "+result);
+		//or
+		System.out.println(p.test(10)); // true
+	}
+	public static void predicateAnd() {
+		
+		boolean result = p.and(p2).test(5); // predicate chaining
+		System.out.println(result); // false
+	}
+	public static void predicateOr() {
+		System.out.println("result: "+p.or(p2).test(5)); // true
+	
+	}
+	public static void predicateNegate() {
+		System.out.println(p.or(p2).negate(9)); // true
+	}
+}
+----------------------
+Eg: Student Collection example using Predicate:
+----------------------
+public class StudentPredicateExample {
+	
+	static Predicate<Student> stPred = student -> student.getGrade()>3;
+	static List<Student> stList = StudentDatabase.getAllStudents();
+	public static void main(String args[]) {
+			stList.stream().filter(stPred).forEach(System.out::println);
+	}
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
