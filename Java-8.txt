@@ -321,26 +321,217 @@ public class StudentPredicateExample {
 -> Eg: -> 
 -> Above example we created static variable to re-use the functionality.
 -> This time we are going with instance method with lambda expression. Because lambda expression behaves like instance method and static method aswell.
-public class PredicateConsumerExample {
+public class PredicateAndConsumerExample {
+
+		Predicate<Student> pSt1 = student -> student.getGrade()>3;
+		Predicate<Student> pSt2 = student -> student.getGpa()>3;
+		BiConsumer<String,List<String> biStu = (name,activities) -> System.out.println(name+" --- "+activities);
+
+		Consumer<Student> stCon = student -> if(pSt1.and(pSt2).test(student)) {
+			biStu.accept(student.getName(),student.getActivities);
+		}
+	
+	public void printNameAndActivites(List<Student> sList) {
+		
+		sList.forEach(stCon);
+	}
 
 	public static void main(String args[]) {
+			
+		List<Student> stList = StudentDatabase.getAllStudentDetails();
+		
+		new PredicateAndConsumer().printNameAndActivites(stList);
 		
 	}
 }
+-----------------------------------------------------------------
+=> BiPredicate: example
+-----------------------------------------------------------------
+=> In the above example, we can modify the predicate function to BiPredicate like below
 
+-> BiPredicate<Integer,Double> stBiP = (grade,gpa) -> grade>3 && gpa>3;
+-> in Consumer, we pass the BiPredicate detials.
+Consumer<Student> conSt = student -> {
+	if(stBip.test(stdent.getGrade(),stdent.getGpa())) {
+		System.out.println(student);
+	}
+};
+-----------------------------------------------------------------
+=> Function Functional Interface: 
+-----------------------------------------------------------------
+-> Available in java.util.function
+-> method:
+	-> apply()
+	-> default compose()
+	-> default andThen()
+-> Eg: 1)
+public class FunctionInterfaceDemo {
 
+	static Function<String,String> strFun = str -> str.toUpperCase();
+	static Function<String,String> strFun1 = str -> str.toUpperCase().concat("default");
+	public static void main(String args[]) {
+		
+		String name = strFun.apply("raja");
+		System.out.println("Name: "+name);
+		
+		System.out.println(strFun.andThen(strFun1).apply("java 8")); // JAVA 8default // here first strFun will evaluate and then strFun1 will execute.
+		System.out.println(strFun.compose(strFun1).apply("java 8")); // JAVA 8DEFAULT // here strFun1 will evaluate and then strFun will evaluate.
+	}	
+}
+-> Note: compose() function will executed with which we are passing into compose(). eg: s1.compose(s2), here s2 will execute and then s1.
+-----------------------
+Eg: 2:
+public class FunctionExample1 {
+	public static void performConcat(String s){
+		Function<String,String> funStr = str -> str.concat("default");
+		System.out.println(funStr.apply(s));
+		
+	}
+	public static void main(String args[]) {
+		performConcat("Hello");
+	}
+}
+public class FunctionStudeneEx {
+	
+	static Function<List<Student>,HashMap<String,Double>> stFun = student -> {
+		HashMap<String,Double> stHashMap = new HashMap();
+		student.forEach( student ->
+	        if(PredicateStudentExample.p1.test(student)) { 	        	stHashMap.put(student.getName,student.getGPA());
+		)
+		}
+		return stHashMap; 
+	}
+	
+	public static void main() {
+		
+		System.out.println(stFun.apply(StudentDatabase.getAllStudents());
+	}
+}		
+---------------------------------------------------------------
+BiFunction Functional Interface:
+===============================================================
+-> Available in java.util.function
+-> method:
+	-> apply(T1 t1, T2 t2, R r)
+	-> andThen()
+-> BiFunction methods will take 2 inputs where as Function methods take only 1 input.
+Eg:->
+public class BiFunctionEx {
+	static BiFunction<List<Student>,Predicate<Student>, Map<String,Double>> biFun = (students,predStudent) -> {
+		
+		HashMap<String,Double> hm = new HashMap();
+	students.forEach() {
+	if(predStudent.est(student)) 		hm.put(student.getName,student.getGpa()));
+	return hm;
+	}}
+	public static void main(String args[]) {
+		
+		System.out.println(biFun.apply(StudentDatabase.getAllStudent(),PredStudent.p1));	
+	}
+}
+---------------------------------------------------------------
+UnaryOperator Functional Interface:
+---------------------------------------------------------------
+-> This is available in java.util.function package
+-> This interface is extends from Function functional interface.
+-> purpose:
+	If the input and output is the same type, then use UnaryOperator interface.
+-> Eg:
+	public class UnarayExample {
+		static UnaryOperator<String> unaryString = s -> s.toUppercase(); // here input and output is String type.
+		public static void main(String args[]) {
+			System.out.println(unaryString.apply("Rohan"));
+		}
+	}
+----------------------------------------------------------------
+BinaryOperator Functional Interface:
+----------------------------------------------------------------
+-> This is available in java.util.function package
+-> This interface is extends from BiFunction Functional Interface.
+-> methods:
+		-> static minBy()
+		-> static maxBy()
+		-> remaining all are BiFunction methods
+-> purpose:
+	If the 2 inputs and output is the same type, then use BinaryOperator interface.
+-> Eg:
+public class BinaryOperatorEx {
 
+	static Comparator<Integer> compInt = (i1,i2) -> i1.compareTo(i2);
+	static BinaryOperator<Integer> binaryInt = (a,b)-> a+b;
+	public static void main(String args[]) {
+		BinaryOperator<Integer> max = BinaryOperator.maxBy(compInt);
+		System.out.println(max.apply(10,20));
+		
+		BinaryOperator<Integer> min = BinaryOperator.minBy(compInt);
+		System.out.println(min.apply(40,30));
+		
+	}
+}
+--------------------------------------------------------------------
+Supplier Functional Interface:
+--------------------------------------------------------------------
+-> Available in java.util.function package
+-> methods:
+	get()
+-> Eg:
+public class SupplierEx {
+	public static void main(String args[]) {
+		Supplier<Student> studentSupplier = () -> new Student();
+		Supplier<List<Student>> stuSup = () -> StudentDatabase.getAllStudents(); 
+		System.out.println(studentSupplier.get());
+		System.out.println(stuSup.get());
+	}
+}
+======================================================================
+Method Reference:
+======================================================================
+-> purpose:
+	-> it is to simplify the implementation Functional interfaces.
+	-> it will also simplify the lambda expressions.
+-> syntax:
+	ClassName::instance-methodName
+	ClassName::static-methodName
+	Instance::methodName
+-> Where to use Method Reference?
+	-> Lambda expressions referring to a method directly.
+	-> eg: //using lambda expression
+		Function<String,String> strFun = s->s.toUpperCase();
+		//using method reference
+		Function<String,String> strFun =String::toUpperCase();
+-> Where method reference not applicable?
+-> example:
+	Predicate<Student> predUsingLambda = s-> s.getGradeLevel()>3;
+	-> here we wrote our own logic and we are not referring any method which is coming from Predicate.
 
+example:
+---------
+1) public class FunctionMethodReferenceEx {
+	static Function<String> funStr = s->s.toUpperCase();
+	static Function<String> merefStr = String::toUpperCase;
+	public static void main(String args[]) {
+		
+		System.out.println(funStr.apply("Rohan"));	
+		System.out.println(merefStr.apply("Rohan"));	
+	}
+}
 
-
-
-
-
-
-
-
-
-
+2) public class ConsumerMethodReferenceEx {
+	static Consumer<String> conStr = s -> System.out.println(s);
+	static Consumer<String> conMedref = System.out::println;
+	public static void main(String args[]) {
+		
+		conStr.accept("Rohan");
+		conMedref.accept("Rohan");
+	}
+}
+3) public class RefactorMethodRefEx {
+	static Predicate<Student> stuPred = s-> s.getGrade()>=3;
+	public static void main(String args[]) {
+		
+		System.out.println(stuPred.test());
+	}
+}
 
 
 
