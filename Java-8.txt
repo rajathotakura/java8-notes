@@ -527,13 +527,65 @@ example:
 }
 3) public class RefactorMethodRefEx {
 	static Predicate<Student> stuPred = s-> s.getGrade()>=3;
+	//using method ref
+	public static Boolean greaterThanGrade(Student s) {
+		
+		return s.getGradeLevel()<=3;
+	}
+	static Predicate<Student> stuPr = RefactorMethodRefEx::greaterThanGrade;
 	public static void main(String args[]) {
 		
-		System.out.println(stuPred.test());
+		System.out.println(stuPred.test(StudentDatabase.stuSupplier.get()));
+	System.out.println(stuPr.test(student object));
 	}
 }
+------------------------------------------------------------------
+Constructor Reference:
+==================================================================
+syntax:
+	Classname::new
+note:
+	We can only use Consturctor reference for Functional Interfaces.
 
+	Supplier<Student> studentSupplier = Student::new; // valid
+	
+	Student student = Student::new;// invalid , Compilation issue.
+eg:
+1) 
+public class ConRef {
+	static Supplier<Student> stuSup = Student::new; // Student class should have zero parameterized constructor.
+	static Function<String,Student> stuFun = Student::new; // here Student class should have 1 parameterized constructor. 
+	public static void main(String args[]) {
+		System.out.println(stuSup.get());
+	
+		System.out.println(stuFun.apply("name"));
+	}
+}
+=====================================================================
+Lambdas and Local Variables:
+=====================================================================
+-> we can not reassign the local variable in lambda expression.
+-> local variable name, we should not use in lambda body.
+======================================================================
+Streams API:
+======================================================================
+What is a Stream?
+-> Stream is sequence of elements which can be created out of collections such as List or Arrays or any kind of I/O resource.
+eg:
+	List<Stream> names = Arrays.asList("john","ron","jack");
+	names.stream(); // creates a stream
+-> Stream operations can be performed either sequentially or parallel.
+-> 	eg: names.parallelStream(); // creates a parallel stream
 
+Eg:
+public class StreamEx {
+	public static void main(String args[]) {
+		
+		Map<String,List<String> mapStu = StudentDatabase.getAllname().stream().collect(Collectors.toMap(Student::getName,Student::getActivities);
+
+	System.out.println(mapStu);
+	}
+}
 
 
 
