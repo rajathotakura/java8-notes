@@ -1,0 +1,625 @@
+Git:
+====
+Why Source Control?
+-------------------
+-> Back up / Archive
+-> Versioning / History
+-> Undo changes
+-> Comparing the changes
+-> Collaboration / Team work
+-> Isolation of changes using braches
+-> Experimentation in safe way
+-> some source control offers CODE REVIEW.
+
+Source control options:
+-----------------------
+Two main types
+-> Centralized
+-> Decentralized / Distributed
+Centralized:
+------------
+-> Free: Subversion, CVS
+-> Commercial: ClearCase, Perforce, Team Foundation Server (TFS)
+-> Requires connection to central server for most operations, like file editing etc.
+
+Distributed:
+------------
+-> Mecurial
+-> Git
+-> Most operations are local
+-> Central server not required.
+-------------------------------
+What is Git?
+============
+-> Distributed source control system
+-> open source
+-> Developed for Linuz project requirements
+-> Most operatons are local
+-> Very fast
+-> Active Community
+----------------------------------
+Key concepts:
+----------------------------------
+-> Repository contains files, history, config managed by git.
+-> Three states of Git
+	-> Working directory
+	-> Staging area -> pre commit holding area
+	-> Commit - Git repository(history)
+-> Remote repository - GitHub
+-> master branch
+==================================================
+Git Configuration and commands:
+==================================================
+-> to know git version:
+	type command: git version
+-> to add user name and email:
+	git config --global user.name "rajathotakura"
+	git congig --global user.email "rajathotakura@gmail.com"
+--> to know user name, email address, default branch and etcf:
+	git config --global --list
+--> to clone the repo (getting project files into local)
+	git clone [repo url];
+--> to know the status of git repo
+	git status
+--> newly created file from untracked to tracked state
+	git add [file-name.extension]
+--> to Unstage the stage file.
+	git reset HEAD [file-name.extension]
+--> to commit the stage files
+	git commit -m "commit detail message";
+--> to initialize the new repository using command line
+	git init [repo-name]
+eg:
+	git init demo
+	cd demo
+	--> create files in demo folder -> add -> commit -> push
+--> to change the branch
+	git branch -m [new branch name]
+--> to create new repo with main as default branch
+	git init -b main local-demo
+--> to change the default branch as main for any repo
+	git config --global init.defaultBranch main
+--> to add the changes and commit in single line comand
+	git commit -am "message"
+
+
+Note:
+once we commit, then the files will store in local repository. if we want to store in central repository, then use below command,
+--> to push the changes from local repo to central repo
+	git push origin [branch-name]
+=======================================================
+Git vs GitHub:
+=======================================================
+-> Git
+	-> Default branch still "master"
+-> GitHUB
+	-> Default now "main" (new repos only)
+	-> can be reset back to "master"
+-> Option 1: To reset Default
+-> GitHub
+	-> set default branch back to master
+	-> settings -> Repositories -> Repository default branch
+		-> change to master and update
+	-> Later change back to main if needed.
+-> Option 2: Embrace the Change
+-> GitHub
+	-> Leave the new default as main
+-> Git
+	-> update Git (if needed)
+	-> Existing repos - change master to main
+		-> before pushing to GitHub
+	-> Change default branch to main
+		-> or company's standard.
+================================================
+Configure notepad++ with git in windows as text editor - Notepadd++ Bash setup
+=================================================
+add the notepad++ installation path in environment variables.
+-> in home directory, we can make notepad++ as default text editor by using following command
+-> type the command in git bash
+	-> notepad++ .bash_profile
+		-> so notepad++ will open. in side notepad++, type below command
+			-> alias npp='notepad++.exe mulitInst nosession'
+		-> from now onwards, if we type npp in git bash, then notepad will open.
+-> the above setup is only for perticular user level only. to setup global level as notepad++ as default setup, follow below commands
+-> first check the configuration to check any default editor configured or not?
+	-> cat ~/.gitconfig
+		-> it will show name, email, default text editor and etc.
+-> git config --global core.editor "notepad++.ext -multiInst -nosession"
+-> to check weather editor added as global level or not. follow below command
+	git config --global --list
+	-> it will list
+		-> name
+		-> email
+		-> core.editor
+-> to test, follow the below command to edit the configuration
+	-> git config --global -e
+===========================================================================
+Working with Git in Three ways:
+===========================================================================
+--> Starting a project
+	-> 1) Fresh (no Source yet)
+	-> 2) Existing source locally
+	-> 3) GitHub project (Fork and clone)
+
+1) Fresh start:
+----------------
+	--> we can generate ramdom text in himsum.co website
+	--> Fresh start with initialize a new project.
+	--> git init fresh-project
+		new initialization started for fresh-project.
+	--> to remove the file
+		-> rm -rf [file name]
+2) Existing Project:
+--------------------
+ 	--> for sample existing project, we can get in http://initializr.com
+	--> to rename the folder
+		-> mv [old folder name] [new folder name]
+	--> get the existing project in the form of zip or war format
+	--> unzip the project
+	--> go to project root directory
+	--> use git command to initialize the repo
+		--> git init
+	--> git status
+	--> untracked to tracked state	
+		--> git add .
+	--> git commit -m "commit message";
+3) Existing project in GitHub: (Fork and Clone): 
+------------------------------------------------
+Fork: 
+--> click on fork option -> then total project will copy into git hub logged-in user account.  
+--> Fork means, Total project will copy into github user local space. benefits are, if we dont want to do or touch the original source code, then use fork.
+Clone:
+--> Now we can get the local copy url by clicling on clone option. Then use the below command to get the project into development space.
+	git clone [url]
+****origin/master
+------------------
+--> origin refers remote repository, master refers branch from remote repo.
+=========================================================
+Basic workflow - Add, Commit, push and Pull
+=========================================================
+-> add:
+-------
+	-> if we add or modify any files, then those files will comes under untracked state. we can make those to tracked by using 'add' command.
+		eg: git add .
+			or
+		    git add [file name1,file name2, file name3, etc.]
+-> commit:
+----------
+	-> If we add or modify any files, then we should commit the changes to save in local repository.
+		eg: git commit  --> here default text editor will open and asks commit message	
+			or
+		    git commit -m 'commit message';
+-> push vs pull:
+----------------
+-> while pushing the local changes into remote repository, it's alsways recommended to pull the code from remote repository.
+Eg:
+	git pull origin [branch name]
+	git push origin [branch name]
+==================================================================
+Q) How to know the git tracked files list?
+Ans: use the below command
+	-> git ls-files
+Q) I added the modified file to staging area using 'add' command. I am not commit the changes yet. Now I modified the same file again. What will happen?
+Ans: So we need to add the file to stagging area again using 'add' command.
+===================================================================
+Recursively adding the files to Git repo:
+---------------------------------------
+--> to create folder in recursively, use below command:
+	-> mkdir -p level1/level2/level3/level4
+--> Git will show the untracked files only base folder. here base folder is level1.
+--> if we add the created files/folders into stagging area using 'add' command. 	
+	-> git add .
+====================================================================
+*********Backing out changes from git repo:
+====================================================================
+--> if we modify the file and added that file to stagging area using 'add' command. and then if we want to back the file from stagging area to unstagging area
+	git reset HEAD [file-name]
+note:- Here file changes won't be effected. File changes will be present in that file.
+--> if we dont want the file changes, [i.e. if we want original file back]. then use below command: [i.e. if want the last commited file changes]
+	-> git checkout -- [file-name] 
+Note:- the latest modifications will gone from the file. Only last commited changes will be present in the file.
+====================================================================
+Renaming Files Moving Files:
+====================================================================
+Rename:
+-------
+-> to rename the file use below command
+	-> git mv [old file name] [new file name]
+	-> again we need to commit the changes
+		-> git commit -m 'commit message';
+Note: here git will treat that file name modified only. So we need to commit the changes.
+
+-> if we use bash command to rename the file
+	-> mv [old file name] [new file name]
+Note: Here git will treat that, we deleted the that old file name file and created new file with new name. So new file will be in untracked state. so use the below command, so that we are telling to git saying, we just renamed the file but not deleted.
+	=> git add -A
+		--> after that we need to commit the changes.
+-> if we renaming the file manually using file manager, then also git will treat that above 2 operations. 1) file was deleted in old directory. 2) new file was created in new directory.
+	but here, if we rename the file manually, then operating system files also will show in untracked list. make sure we should not store OS files in git repo. in that case follow below command
+	git add [file name]
+	git add -u --> this is to update the index.
+	git commit;
+Moving:
+-------
+-> we can use same command for moving also
+	git mv [file-name][directory-name]
+		-> here git will treat that file was moved
+-> using bash command also we can move the file
+	mv [file-name][directory-name]
+	-> here git will treat that file was deleted and new file created in specided directory.
+	-> to fix this
+		git add -A
+Deleting files:
+===============
+Untracked file deletion:
+-------------------------
+-> if we just created file and want to delete that file then use below command:
+	git rm [file-name]
+		This command will not work. because git not tracked yet. So git unable to find that file. in this case we can use Bash commands to delete the file.
+	-> rm [file-name]
+Tracked file deletion:
+----------------------
+-> to delete the tracked file, use below command:
+	git rm [file-name]
+-> after that we should commit the changes.
+
+Delete the file in Git repo and restore back to Git repo:
+----------------------------------------------------------
+--> to delete the file in repo
+	git rm [file-name]
+--> if we check the status using 'Git status', git it asking to commit the changes. if we want restore back, then follow below
+	-> git reset HEAD [file-name]
+		-> here reset command will not restore, rather it will take back to unstaged state. Why because earlier we deleted the file and that file was in unstaged staged state before deleting.
+	-> to fix this use 'checkout' command. that means 'checkout' command will restore the file back into file system.
+		-> git checkout -- [file-name]
+	-> not git is in clean working directory.
+If we delete the file using file system or bash command, what will happen?
+------------------------------------------------------------------
+-> to delete the file using bash command, use below command
+	-> rm [file-name]
+-> if we check the status using 'git status', it will ask to stage the changes using commit.
+-> then we use the below command to stage the changes
+	-> git add -A
+		-> now file add in stagging area and asking us to commit.
+recursive deletion: (if directory having files and directories):-
+-----------------------------------------------------------------
+--> if directory/folder having mulitple files and directories, then use below command:
+	-> rm -rf [direcotry-name]
+--> git unable to tracked the deleted files. so we need to add the stage.
+	-> git add -A
+--> once files add to stagging area, then we can commit the changes using commit message.
+	-> git commit -m 'commit message';
+History:
+=========
+-> to get the git command help:
+	-> git help log
+		-> it will list out all the commands with description.
+-> to check the commit history:
+	-> git log
+		commit 1850c6323be7d8a0b55ce70a479c22364b2ad443
+		Author: rajaram <rajaram.mohanarao@photon.com>
+		Date:   Fri Apr 26 18:11:20 2024 +0530
+
+    			java 8 new features added --> this is commit message
+-> if want commit id short then use below command:
+	-> git log --abbrev-commit 
+		commit 1850c63
+		Author: rajaram <rajaram.mohanarao@photon.com>
+		Date:   Tue Apr 23 14:58:32 2024 +0530
+
+    			Lambda features
+-> if we want all the log history in one line then use below command
+	-> git log --oneline [--graph --decorate] -> graph and decorate are optional.
+		or
+	-> git log --all --oneline --grapth --decorate
+-> if want to secify the log history range using commit id, then follow below command:
+	->  git log 1850c63...ee77ed8
+-> git log search based on date:
+---------------------------------
+--> to search log history based on days:
+	->  git log --since="7 days ago"
+-> to check the individual file log history:
+--------------------------------------------
+-> to check individual file history log, follow below command:
+	-> git log -- [file-name with extension]
+-> to check file rename history:
+---------------------------------
+--> to check the file rename history log, then follow below command:
+	-> git log --follow -- [file name or direcotry with file name]
+->check git specific commit details:
+-------------------------------------
+-> git show [commit id]
+=============================================================
+Git Alias:
+=============================================================
+--> alias is used to create our own command. for example, if any big command or commanly used command need to create short cut, then use alias.
+eg:
+-> git log --all --oneline --graph --decorate
+	--> this command we used commonly or if this is lengthy command. then we can create short cut of this using below command.
+--> git config --global alias.hist "log --all --oneline --graph --decorate".
+----> now use this command.
+		-> git hist
+		-> this command will print all the history in oneline.
+--> bydefault 'git hist' not configured, so we will get error if we execute this command with out configuration.
+--> here i took hist as alias name. but we can take any name as short cut.
+Note:- We can change the alias details in .gitconfig file. Open the file and update if required.
+================================================================
+Ignoring unwanted files and folders:
+================================================================
+-> By using .gitignore file, we can ignore the files and folders.
+-> format of the .gitignore is below
+	-> specific file: [File-name with extension]
+	-> File pattern: [*.extension]
+	-> Folder: [folder-name/]
+-> we can mention the unwanted files or folders names in .gitignore file. 
+-> eg:
+	if this is .gitignore file i want to ignore log files
+	log/    or
+	*.log   or
+	[filename.log]
+================================================================
+Cleanup and Back to origin(master):
+================================================================
+-> when we check the git status using 'git status' command, if it is showing 'Your branch is ahead of 'origin/master' by 14 commits'. Then our local repo having latest code with commits. So we need to push the local changes into git repo using push command. But before pushing the code it is highly recommended to pull the latest code from git repo.
+eg: 
+	-> git pull origin master
+	-> git push origin master.
+So that local repo was cleared.
+=============================================================
+=============================================================
+Compare / Merge Tool -- Visual Merge / Diff Tool
+=============================================================
+-> For visual compare and merge tool purpose, we have several tools available but perforce p4merge tool is best one and freeware.
+-> In Windows, we need to download P4Merge and configure with git:
+	-> P4Merge 
+	-> Git Configuration
+-> Download P4Merge from: https://www.perforce.com/downloads/visual-merge-tool
+-> P4Merge setup with git:
+--------------------------
+-> Add P4Merge path in environment variables
+-> now check from git bash by calling 'p4merge' command
+==> Now configure merge and diff configuration in Git bash
+-> type the below command to configure globally
+-> git config --global merge.tool p4mrge
+-> git config --global mergetool.p4merge.path "C:/Program Files/Perforce/p4merge.ext"
+-> git config --global mergetool.prompt false
+==> now configure for Diff tool:
+-> git config --global diff.tool p4merge
+-> git config --global difftool.p4merge.path "C:/Program Files/Perforce/p4merge.exe"
+-> git config --global difftool.prompt false
+=> to check all are configured properly or not. follow below command.
+	-> git config --global --list
+	-> even we can open global configurations in separate text editor also. if we configured text editor globally. for text editor configuration globally check previous steps above.
+-> to open configuration in separate file:
+	-> git config --global -e
+	-> to close the text editor: Cntrl + W and Alt + f4
+================================================================
+Comparisons:
+================================================================
+-> Git repo setup for comparision: 
+----------------------------------
+-> Comaparisons - Working dir vs Staging Area:
+----------------------------------------------
+-> If we want to check the difference between stagging area file changes and working directory file changes, then we have 2 ways:
+-> 1) using git default command
+	-> git diff
+-> 2) using customized git command
+	-> git difftool --> we configured manually using perforce tool.
+==> Comparisons - Working dir vs git Repository(last commit):
+-------------------------------------------------------------
+-> here also we can check difference 2 ways:
+->1) using git default command
+	-> git diff HEAD
+->2) using customized git command:
+	-> git difftool HEAD
+		-> left window: Git repo file, Right: Working dir fle.
+-------------------------------------------
+=> Comparisons: Staging Area vs Git Repository(Last commit):
+-------------------------------------------
+-> using below commands we can identify the difference:
+-> 1) git diff --staged HEAD
+-> 2) git difftool --staged HEAD
+	-> left window: Git repo file, Right: Staging area file
+--------------------------------------------------------------
+Limiting Comparisions to one file (or path):
+--------------------------------------------------------------
+-> If more than one file has modified in working directory but we want to check only one file differences, then follow below process:
+-> Still we can check with diff command. but all file changes will display. So if we want only one file changes, then use below commands.
+-> git diff -- [File-name]
+	or
+-> git difftool -- [file-name]
+	-> left window: staging area, Right: Working dir file
+--------------------------------------------------------------
+Comparing between Commits:
+--------------------------------------------------------------
+-> Working dir vs Staging vs Git repo
+--------------------------------------------------------------
+-> to know all the logs in oneline
+	git log --oneline
+-> to compare the any specific commit id with latest commit id(HEAD)
+	git diff [commit id] [HEAD]
+	OR
+	git difftool [commit id] [HEAD]
+-> to compare HEAD with HEAD -1 log (one commit before HEAD)
+	git diff HEAD HEAD^
+	OR
+	git difftool HEAD HEAD^
+-> to compare any git log commit ids:
+	git diff [commit id] [commit id]
+	or
+	git difftool [commit id] [commit id]
+---------------------------------------------------------------
+Comparing between Local and remote master braches:
+---------------------------------------------------------------
+=> Difference between local master brach and remote master branch:
+ -> Local repository means: master (@ HEAD)
+ -> Remote repository means: origin/master (GitHub)
+			-> origin refers remote
+-> to check difference
+	git diff master remote/master
+	or
+	git difftool master remote/master
+-----------------------------------------------------------------
+Comparison section clean up and push back to Github:
+-----------------------------------------------------------------
+-> add to track to Git if any file is in untracked state
+	-> git add .
+-> commit the changes
+	-> git commit -m 'commit message';
+-> all ways best practice to use pull command before using push command. 
+	-> git pull
+	-> git push origin master
+=================================================================
+Branching and Merging:
+=================================================================
+-> It's not good practice to push code to master branch.
+-> Always maintain feature or topic branches for good programming practice for each changes and later merge with master branch.
+-> To see list of branches:
+	-> git branch -a
+		* practice
+  		  remotes/origin/practice
+		--> * represents, Current active branch. --> local repo
+		--> remotes represents remote repository.
+To create new Branch:
+---------------------
+-> git branch [branch name]
+to switch from one branch to another branch:
+--------------------------------------------
+-> git checkout [branch name]
+-> $ git log --oneline --decorate
+e789186 (HEAD -> practice, origin/practice, mynewbranch,master) java 8 new features added
+HEAD -> points to last commit on current local branch. 
+origin/practice -> points to last commit on current remote branch.
+master -> recent branch
+mynewbranch -> current active branch
+
+Rename the branch:
+-------------------
+-> git branch -m [old branch][new branch] --> -m means move
+delete the branch:
+-------------------
+-> git branch -d [branch name] --> -d means delete
+Branching & Merging - Happy Path: Fast Forward merges:
+-------------------------------------------------------
+create a branch and checkout with one command:
+-----------------------------------------------
+--> git checkout -b [branch-name]
+Eg:
+-> in current master branch we have sample.html file.
+-> Now i swithced to new branch like mynewbranch.
+-> new i modified the sample.html file from mynewbranch.
+-> now i switched back to master branch.
+-> to check changes
+	git diff master mynewbranch
+-> now, to merge mynewbranch changes into master branch:
+	git merge mynewbranch
+-> This is called fast-forward merge.
+-> fast-forward possible when no changes made on the target branch.
+-> If any changes already happened by someother developer in master on the same file, then fast-forward will not happen.
+------------------------------
+Eg: git log --oneline --graph --decorate
+*f44694a (HEAD,master,mybranch) Changing title of HTML file
+-> here HEAD, master and mybranch pointing to same commit message.
+why because i merged mybranch changes into master branch.
+---------------------------------
+Happy Path / Disable Fast Forward Merges: 
+=========================================
+-> Switched to new branch like add-copyrights.
+-> Now i merge the new branch with master branch.
+-> git merge add-copyrights --no-ff
+
+Conflicting Merges and Resolution:
+==================================
+-> create and checkout new branch like git checkout -b "realwork"
+-> now edit sample.txt in project
+-> commit the changes in realwork branch
+-> come back to master branch
+-> now edit the same file sample.txt 
+-> now commit then changes
+-> now if we try to merge the realwork branch into master, then we will get conflicts.
+-> to resolve conflits, use merge tools like p4merge.
+-> to launch p4merge -> git mergetool
+-> Once you edit the file, you can commit the changes.
+-> In this case, one untracked file will create with all the conflicts messages to revert the changes if required. 
+-> We can add the file in .gitignore file to ignore the file if all the conflicts has been resolved.
+-> add in .gitignore like -> open the file and add *.orig
+-> now .gitignore file in modified state. so we can commit the changes
+-----------------------------------------------------
+Selection cleanup and Push back to github:
+-----------------------------------------------------
+-> first use pull command
+	-> git pull origin master
+-> now push all the local changes to master branch
+	-> git push origin master
+===============================================================
+Rebasing:
+===============================================================
+?
+=====================
+Stashing:
+=====================
+?
+=====================
+Tagging:
+=====================
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
